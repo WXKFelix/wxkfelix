@@ -6,4 +6,10 @@ spring:
     password: root
     type: com.alibaba.druid.pool.DruidDataSource
 server:
-  port: 8080
+#  ssl:
+#        enabled: true  #开启ssl验证
+#        key-store : classpath:keystore.p12 #证书文件位置
+#        key-store-password : 123456  #上面的密钥口令
+#        key-store-type : PKCS12   #storetype 上面的类型
+#        key-alias : tomcat    #tomcat上面的alias  别名
+  port: 8089

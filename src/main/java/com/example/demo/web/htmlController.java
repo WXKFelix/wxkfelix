@@ -1,23 +1,19 @@
 package com.example.demo.web;
 
 import com.example.demo.param.HtmlParam;
-import org.json.JSONObject;
+import com.example.demo.vo.Result;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
+import com.alibaba.fastjson.JSONObject;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
-import java.net.*;
 import java.io.*;
-import java.util.UUID;
 
 /**
  * ClassName: htmlController
@@ -28,6 +24,7 @@ import java.util.UUID;
  * wangxiaokang   修改时间       1.0.0          备注信息
  */
 @RestController
+@RequestMapping("/test")
 public class htmlController {
 
 
@@ -91,4 +88,76 @@ public class htmlController {
         }
         return str;
     }
+
+
+/*
+    @RequestMapping(value = "/getHtmlData", method = RequestMethod.GET)
+    public String getHtmlData() throws IOException {
+        try {
+            // 读取HTML文件
+            String content = Files.readString(Paths.get("example.html"));
+
+            // 删除多余的空格和换行符
+            String text = content.replaceAll("\\s+", " ");
+
+            // 输出处理后的字符串
+            System.out.println(text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    public static void main(String[] args) {
+        String str = "<!DOCTYPE html><html lang=\\\"en\\\">";
+        String s = str.replaceAll("\\\\", "");
+        System.out.println(s);
+    }
+
+    @PostMapping(value = "/getHtmlData",produces = "application/json;charset=UTF-8;MediaType.APPLICATION_JSON_VALUE")
+    @ResponseBody
+    public Result getHtmlData(@RequestBody HtmlParam param) throws IOException, InterruptedException {
+        String exe = "python";
+        String command = "src/main/resources/CatchCodeByUrl.py";
+        String url = param.getUrl();
+        String[] cmdArr = new String[] {exe,command,url};
+        Process process = Runtime.getRuntime().exec(cmdArr);
+        InputStream is = process.getInputStream();
+        DataInputStream dis = new DataInputStream(is);
+        String str = dis.readLine();
+        process.waitFor();
+        System.out.println(str);
+        // 读取文件
+        BufferedReader reader = new BufferedReader(new FileReader("python.html"));
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                // 去除多余的空格和换行符
+                //line = line.trim().replaceAll("\\s+", " ");
+                stringBuilder.append(line);
+            }
+            // 输出成一行字符串
+            System.out.println(stringBuilder.toString());
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Result result = new Result();
+        String string = stringBuilder.toString();
+        String replaceAll = string.replaceAll("\\\\", "");
+        String unescapeJava = StringEscapeUtils.unescapeJava(string);
+        result.setData(unescapeJava);
+        result.setCode(200);
+        result.setMessage("成功");
+        File myObj = new File("python.html");
+        if (myObj.delete()) {
+            System.out.println("已经删除相关的" + myObj.getName()+"文件!");
+        } else {
+            System.out.println("Failed to delete the file.");
+        }
+        System.out.println(result);
+        return result;
+    }
+
+
 }
