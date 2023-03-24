@@ -90,22 +90,14 @@ public class htmlController {
     }
 
 
-/*
-    @RequestMapping(value = "/getHtmlData", method = RequestMethod.GET)
-    public String getHtmlData() throws IOException {
-        try {
-            // 读取HTML文件
-            String content = Files.readString(Paths.get("example.html"));
-
-            // 删除多余的空格和换行符
-            String text = content.replaceAll("\\s+", " ");
-
-            // 输出处理后的字符串
-            System.out.println(text);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
+    @RequestMapping(value = "/getHtmlDatas", method = RequestMethod.GET)
+    public Result getHtmlData() throws IOException {
+        Result result = new Result();
+        result.setData("===================");
+        result.setCode(200);
+        result.setMessage("测试OK");
+        return result;
+    }
 
     public static void main(String[] args) {
         String str = "<!DOCTYPE html><html lang=\\\"en\\\">";
