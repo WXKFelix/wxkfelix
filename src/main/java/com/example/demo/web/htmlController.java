@@ -105,7 +105,7 @@ public class htmlController {
         System.out.println(s);
     }
 
-    @PostMapping(value = "/getHtmlData",produces = "application/json;charset=UTF-8;MediaType.APPLICATION_JSON_VALUE")
+    @PostMapping(value = "/getHtmlData",produces = "application/json;charset=utf-8;MediaType.APPLICATION_JSON_VALUE")
     @ResponseBody
     public Result getHtmlData(@RequestBody HtmlParam param) throws IOException, InterruptedException {
         String exe = "python";
@@ -119,7 +119,7 @@ public class htmlController {
         process.waitFor();
         System.out.println(str);
         // 读取文件
-        BufferedReader reader = new BufferedReader(new FileReader("python.html"));
+        BufferedReader reader = new BufferedReader(new FileReader("src\\main\\resources\\python.html"));
         StringBuilder stringBuilder = new StringBuilder();
         try {
             String line = null;
@@ -141,12 +141,12 @@ public class htmlController {
         result.setData(unescapeJava);
         result.setCode(200);
         result.setMessage("成功");
-        File myObj = new File("python.html");
+/*        File myObj = new File("python.html");
         if (myObj.delete()) {
             System.out.println("已经删除相关的" + myObj.getName()+"文件!");
         } else {
             System.out.println("Failed to delete the file.");
-        }
+        }*/
         System.out.println(result);
         return result;
     }

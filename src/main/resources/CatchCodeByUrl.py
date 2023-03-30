@@ -7,6 +7,7 @@ import operator
 import requests
 import re
 import sys
+import os
 # 引入HTML解析器
 from bs4 import BeautifulSoup
 # 替换相对路径为绝对路径
@@ -68,10 +69,12 @@ def get_source(url):
     return source
 
 # 将源代码写入指定文件
-def write_file(file,soup):
-    with open(file, 'w',encoding='utf-8') as f:
+def write_file(file,soup, dir_path):
+    file_path = os.path.join(dir_path, file)
+    with open(file_path, 'w', encoding='utf-8') as f:
         f.write(soup.prettify())
         f.close()
+
 
 # 从url中获得网络协议：HTTP 或 HTTPS
 def isHttps(url):
@@ -107,17 +110,11 @@ def isProctolStart(str):
         return False
 # 主程序入口
 if __name__ == '__main__':
-  #url = input('请输入需要获取源代码的网址:')
-  # main = getMainPage(url)
-  # print(main)
-  file = getPageName(sys.argv[1])
-  # 获取源代码
-  source = get_source(sys.argv[1])
-  # 声明BeautifulSoup对象
-  soup = BeautifulSoup(source, 'lxml')
-  #替换相对路径
-  hand(sys.argv[1],soup)
-  # 写入文件并保存
-  write_file(file,soup)
-
-  print('源代码已保存至'+file)
+    url = sys.argv[1]
+    file = getPageName(url)
+    dir_path = r'src\main\resources'
+    source = get_source(url)
+    soup = BeautifulSoup(source, 'lxml')
+    hand(url, soup)
+    write_file(file, soup, dir_path)
+    print('源代码已保存至', os.path.join(dir_path, file))
